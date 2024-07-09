@@ -1,0 +1,32 @@
+{{define "_Cad"}}
+<form id="Cad-form" method="POST" action="push-Cad">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Itens:</label><br>
+                <input type="text" id="Cad-itens" name="Cad-itens" class="form-control"
+                    value="{{.Cad.Caminhos_Cad.Itens_Cad}}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Receita:</label><br>
+                <input type="text" name="Cad-receita" class="form-control" value="{{.Cad.Caminhos_Cad.Receita_Cad}}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Extras:</label><br>
+                <input type="text" name="Cad-nutri" class="form-control" value="{{.Cad.Caminhos_Cad.CampoExtra_Cad}}">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" value="salvar" class="btn btn-primary">Puxar dados</button>
+    <a class="btn btn-warning" href="/">Voltar</a>
+</form>
+{{end}}

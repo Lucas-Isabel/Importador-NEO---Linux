@@ -1,0 +1,123 @@
+{{define "File"}}
+{{template "_head"}}
+{{template "_nav"}}
+
+<body class="bg-dark font-weight-light text-white">
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Rodou");
+
+            var valorSelecionado = ("{{.Tipo.Tipo}}").toUpperCase()
+            console.log("Formato selecionado:", valorSelecionado);
+            var itensmgv = document.getElementById('itensmgv-form');
+            var txitens = document.getElementById('txitens-form');
+            var Cad = document.getElementById('Cad-form');
+
+            if (valorSelecionado === 'ITENSMGV') {
+                console.log("Formato selecionado:", valorSelecionado);
+                itensmgv.style.display = "inline";
+                Cad.style.display = "none";
+                txitens.style.display = "none";
+            } else if (valorSelecionado === 'TXITENS') {
+                console.log("Formato selecionado:", valorSelecionado);
+                itensmgv.style.display = "none";
+                Cad.style.display = "none";
+                txitens.style.display = "inline";
+            } else if (valorSelecionado === 'CAD') {
+                console.log("Formato selecionado:", valorSelecionado);
+                itensmgv.style.display = "none";
+                Cad.style.display = "inline";
+                txitens.style.display = "none";
+            } else {
+                itensmgv.style.display = "inline";
+                Cad.style.display = "none";
+                txitens.style.display = "none";
+            }
+
+            document.getElementById('formato-select').addEventListener('change', function () {
+
+                var valorSelecionado = this.value;
+                // Log the selected value
+                let itensmgv = document.getElementById('itensmgv-form');
+                let txitens = document.getElementById('txitens-form');
+                let Cad = document.getElementById('Cad-form');
+
+                if (valorSelecionado === 'itensmgv') {
+                    console.log("Formato selecionado:", valorSelecionado);
+                    itensmgv.style.display = "inline";
+                    Cad.style.display = "none";
+                    txitens.style.display = "none";
+                } else if (valorSelecionado === 'txitens') {
+                    console.log("Formato selecionado:", valorSelecionado);
+                    itensmgv.style.display = "none";
+                    Cad.style.display = "none";
+                    txitens.style.display = "inline";
+                } else if (valorSelecionado === 'Cad') {
+                    console.log("Formato selecionado:", valorSelecionado);
+                    itensmgv.style.display = "none";
+                    Cad.style.display = "inline";
+                    txitens.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+    <div class="container content bg-dark">
+        <div class="container bg-dark content">
+            <div class="jumbotron jumbotron-fluid bg-dark">
+                <div class="container">
+                    <h1 class="font-weight-light">Arquivo de importação</h1>
+                    <p class="lead">Insira os detalhes</p>
+                </div>
+            </div>
+            <form method="POST" action="auto_add_files">
+                <span>Formato do arquivo: </span>
+                <select name="formato" id="formato-select">
+                    <option value="{{.Tipo.Tipo}}">{{.Tipo.Tipo}}</option>
+                    <option value="itensmgv">ITENSMGV</option>
+                    <option value="txitens">TXITENS</option>
+                    <option value="Cad">Cad</option>
+                </select>
+                <a class="btn btn-warning" style="color: black;"><input type="checkbox" style="color: black;" name="bak"
+                        id="bak">Usar BAK</input></a>
+                <button type="submit" class="btn btn-warning">Selecionar Pasta</button>
+                <button type="button" class="btn btn-warning" onclick="limparInputs()">Limpar campos</button>
+            </form>
+            {{template "_toledo" .}}
+            {{template "_Cad" .}}
+            {{template "_txitens" .}}
+            <br>
+        </div>
+    </div>
+
+    {{template "_footer"}}
+    <script>
+        function buscaArquivo(file) {
+            if (!file) {
+                console.error("Parâmetro 'file' está vazio ou indefinido");
+                return;
+            }
+
+            setTimeout(function() {
+                window.location.href = "/file?tipo=" + file;
+            }, 500);
+        }
+        function limparInputs() {
+            // Seleciona todos os elementos <input> na página
+            const inputs = document.querySelectorAll('input');
+
+            // Itera sobre todos os inputs e define o valor como vazio, exceto os selects
+            inputs.forEach(input => {
+                if (input.type !== 'select-one' && input.type !== 'select-multiple') {
+                    input.value = '';
+                }
+            });
+        }
+
+    </script>
+</body>
+
+
+</html>
+{{end}}

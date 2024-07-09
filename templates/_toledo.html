@@ -1,0 +1,130 @@
+{{define "_toledo"}}
+<form id="itensmgv-form" method="POST" action="push">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Itens:</label><br>
+                <div class="input-group">
+                    <input type="text" id="mgv-itens" name="itens" class="form-control"
+                        value="{{.Toledo.Caminhos.Itens}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" onclick="buscaArquivo('itens')">Buscar
+                            arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Receita:</label>
+                <div class="input-group">
+                    <input type="text" name="mgv-receita" class="form-control"
+                        value="{{.Toledo.Caminhos.Receita}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('receita')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Nutricional:</label>
+                <div class="input-group">
+                    <input type="text" name="mgv-nutri" class="form-control"
+                        value="{{.Toledo.Caminhos.Nutricional}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('nutricional')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Campo extra 1:</label>
+                <div class="input-group">
+                    <input type="text" name="mgv-campo-extra-1" class="form-control"
+                        value="{{.Toledo.Caminhos.CampoExtra}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('campo-extra-1')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Fornecedor:</label>
+                <div class="input-group">
+                    <input type="text" name="mgv-fornecedor" class="form-control"
+                        value="{{.Toledo.Caminhos.Fornecedor}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('fornecedor')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Fracionador:</label>
+                <div class="input-group">
+                    <input type="text" id="mgv-fracionador" name="mgv-fracionador" class="form-control"
+                        value="{{.Toledo.Caminhos.Fracionador}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('fracionador')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Conservantes:</label>
+                <div class="input-group">
+                    <input type="text" id="mgv-conservantes" name="mgv-conservantes" class="form-control"
+                        value="{{.Toledo.Caminhos.Conservantes}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button"
+                            onclick="buscaArquivo('conservantes')">Buscar arquivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="tipo">Tara:</label>
+                <div class="input-group">
+                    <input type="text" id="mgv-tara" name="mgv-tara" class="form-control"
+                        value="{{.Toledo.Caminhos.Tara}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" onclick="buscaArquivo('tara')">Buscar
+                            arquivo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <button type="submit" value="salvar" class="btn btn-primary">Puxar dados</button>
+    <a class="btn btn-warning" href="/">Voltar</a>
+
+</form>
+{{end}}

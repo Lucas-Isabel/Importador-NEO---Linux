@@ -1,0 +1,37 @@
+{{define "Erro"}}
+{{template "_head"}}
+{{template "_nav"}}
+
+<body class="bg-dark text-white">
+
+    <div class="container mt-5">
+        <div class="jumbotron bg-dark">
+            <h1 class="display-4 font-weight-light">Erro ao Ler Arquivo de Importação</h1>
+            <p class="lead">Houve um problema ao tentar ler o arquivo de importação.</p>
+            <hr class="my-4">
+            <div class="alert alert-danger" role="alert">
+                <strong>Ocorreu um erro ao tentar ler o arquivo de importação.</strong>
+            </div>
+            <div class="form-group">
+                <label for="detalhesErro">Detalhes do Erro:</label>
+                <textarea class="form-control" id="detalhesErro" rows="20" readonly>
+# Problema ao ler um arquivo de importação, realize as seguintes etapas:
+
+1. Verificação da Localização do Arquivo:
+- Confirme se o arquivo está na pasta correta e acessível para o sistema.
+- Confirme se o caminho para o arquivo está correto e se as permissões de acesso estão configuradas corretamente.
+
+2. Integridade e Formato do Arquivo:
+- Verifique se o arquivo não está sendo usado por outro processo.
+- Certifique-se de que o arquivo está em um formato válido e íntegro para leitura.
+
+</textarea>
+            </div>
+        </div>
+    </div>
+
+    {{template "_footer"}}
+</body>
+
+</html>
+{{end}}

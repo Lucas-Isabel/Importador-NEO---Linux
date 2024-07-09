@@ -1,0 +1,450 @@
+{{define "Index"}}
+{{template "_head"}}
+{{template "_nav"}}
+
+<body class="bg-dark">
+    <script>
+
+    </script>
+    <div class="container content">
+        <div class="card-footer bg-dark"></div>
+        <style>
+            .progress-bar .progress {
+                transition: width 0.5s ease-in-out;
+                /* Transição suave da largura */
+            }
+        </style>
+        <form id="importForm" method="POST" action="/importar">
+            <section class="card">
+                <div>
+                    <table class="table table-striped table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Codigo</th>
+                                <th>Nome</th>
+                                <th>Setores</th>
+                                <th><button type="button" id="btn-deselect" onclick="toggleSelection()" class="btn btn-primary">Desmarcar Todas</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .}}
+                            <tr>
+                                <td>
+                                    <div class="btn-group" data-bs-toggle="buttons">
+                                        <label class="btn btn-primary active">
+                                            <input type="checkbox" class="me-2 select-bal" name="{{.Ip}}" id="{{.Ip}}"
+                                                value="on" checked /> Importar
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>{{.Ip}}</td>
+                                <td>{{.Nome}}</td>
+                                <td>{{.Lista_Setores}}</td>
+                                <td><button type="button" onclick="onEdit(['{{.Id}}', '{{.Ip}}'])"
+                                        class="btn btn-warning mb-2">Editar</button>
+                                </td>
+                                <td>
+                                    <button type="button" onclick="onDelete(['{{.Id}}', '{{.Ip}}'])"
+                                        class="btn btn-danger mb-2">Deletar</button>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer bg-dark">
+                    <label for="botao-importar">
+                        <button type="submit" id="btn-import" class="btn btn-primary mb-2" onclick="startImport(event)">
+                            IMPORTAR
+                        </button>
+                        <button type="button" id="btn-schedular" class="btn btn-primary mb-2" style="display: none;"
+                            onclick="canImport()">
+                            IMPORTAÇÃO AUTOMÁTICA
+                        </button>
+                        <button type="button" class="btn btn-warning mb-2">
+                            <input type="checkbox" name="somente_preco" id="somente_preco" value="on"></input>
+                            Atualizar apenas Descrição e Preço
+                        </button>
+                        <button type="button" class="btn btn-warning mb-2">
+                            <input type="checkbox" name="" id="check-scheduler" value=""></input>
+                            Importar automaticamente
+                        </button>
+                        <span id="span-scheduler" style="display: none; color: white;">
+                            a cada <input class="input" style="width: 5%;" type="number" name="" id="minutos" value=""
+                                placeholder="X" min="0" value="0"></input> minutos.
+                        </span>
+
+                    </label>
+                </div>
+            </section>
+        </form>
+
+        <div class="progress-bar mt-3"
+            style="display:none; width: 100%; background-color: #f3f3f3; border-radius: 4px;">
+            <div class="progress bg-primary" id="progress"
+                style="width: 0%; height: 24px; text-align: center; line-height: 24px; color: white;">0%</div>
+        </div>
+
+        <p id="status" style="color: white;"><span id="ellipsis"></span></p>
+
+        <div id="conect"></div>
+        <div id="result" style="color: white;"></div>
+        <div id="errors" style="color: white;"></div>
+    </div>
+
+    <div>
+        <form id="importForm" method="POST" action="/set-scheduler">
+            <button type="submit" class="btn btn-warning mb-2">
+                <input type="checkbox" name="check-auto-scheduler" id="check-auto-scheduler" value="on"></input>
+                Iniciar processo ao abrir
+            </button>
+        </form>
+    </div>
+
+    {{template "_footer"}}
+
+    <script>
+        let selectAll = false;  // Variável para acompanhar o estado atual
+
+        function toggleSelection() {
+            const selecionadas = document.querySelectorAll(".select-bal");
+
+            if (selecionadas) {
+                for (let i = 0; i < selecionadas.length; i++) {
+                    selecionadas[i].checked = selectAll;
+                }
+                // Alterna o estado para a próxima chamada
+                selectAll = !selectAll;
+            }
+
+            if(selectAll){
+                document.getElementById("btn-deselect").textContent = "Marcar Todas" 
+            } else{
+                document.getElementById("btn-deselect").textContent = "Desmarcar Todas" 
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            response = await fetch('/can-scheduler');  // Reutilizando a variável 'response'
+            data = await response.json();
+            console.log("CHECKADO: ", data["canScheduler"]);
+            if (data["canScheduler"]) {
+                document.getElementById('check-auto-scheduler').checked = true;
+                document.getElementById('check-scheduler').checked = true;
+                document.getElementById('check-scheduler').value = on;
+                document.getElementById('somente_preco').checked = true;
+                document.getElementById('btn-schedular').style.display = "inline";
+                document.getElementById('btn-import').style.display = "none";
+                canImport()
+            }
+        })
+
+        // var none = true;
+        // document.getElementById('check-scheduler').addEventListener('change', function () {
+
+        //     if (none) {
+        //         document.getElementById('span-scheduler').style.display = "inline";
+        //         none = false;
+        //         return
+        //     }
+        //     document.getElementById('span-scheduler').style.display = "none";
+        //     none = true;
+        // })
+
+        var buttonSchedularNone = true
+        document.getElementById('check-scheduler').addEventListener('change', function () {
+
+            if (buttonSchedularNone) {
+                document.getElementById('btn-schedular').style.display = "inline";
+                document.getElementById('btn-import').style.display = "none";
+                buttonSchedularNone = false;
+                return
+            }
+            document.getElementById('btn-schedular').style.display = "none";
+            document.getElementById('btn-import').style.display = "inline";
+            buttonSchedularNone = true;
+        })
+
+        function onEdit(idEip) {
+            let id = idEip[0];
+            let ip = idEip[1];
+            let mensagem = "Deseja mesmo editar balança: " + ip;
+            let confirmacao = confirm(mensagem);
+
+            if (confirmacao) {
+                window.location = "/edit-balanca?identifiCador=" + ip;
+            }
+        }
+
+        function onDelete(idEip) {
+            let id = idEip[0];
+            let ip = idEip[1];
+            let mensagem = "Deseja mesmo deletar balança: " + ip;
+            let confirmacao = confirm(mensagem);
+
+            if (confirmacao) {
+                window.location = "/delete?identifiCador=" + ip;
+            }
+        }
+        var importando = false;
+        var c = 0;
+        async function canImport() {
+            try {
+                console.log("pre-can import");
+                let response = await fetch('/can-import');
+                let data = await response.json();
+                console.log(data["canImport"]);
+                var checkbox = document.getElementById('check-scheduler');
+                var one = true;
+                if (checkbox.checked) {
+                    let bolean = document.getElementById('check-scheduler').checked;
+                    c++
+                    console.log(c)
+                    response = await fetch('/can-import');  // Reutilizando a variável 'response'
+                    data = await response.json();
+                    console.log("CHECKADO: ", data["canImport"]);
+                    if (data["canImport"]) {
+                        let event = new Event('click');
+                        await startImport(event);
+
+                        // Verifica se a importação ainda é possível
+                    } else if (one) {
+                        let event = new Event('click');
+                        await startImport(event);
+                        one = false;
+                    }
+                    bolean = (document.getElementById('check-scheduler').checked);
+                    console.log(bolean);
+                    // do {
+                    let intervalo = 10000
+                    setInterval(async function start() {
+                        c++
+                        console.log(c)
+                        response = await fetch('/can-import');  // Reutilizando a variável 'response'
+                        data = await response.json();
+                        console.log("CHECKADO: ", data["canImport"]);
+                        if (data["canImport"]) {
+                            let event = new Event('click');
+                            await startImport(event);
+
+                            // Verifica se a importação ainda é possível
+                        } else if (one) {
+                            let event = new Event('click');
+                            await startImport(event);
+                            one = false;
+                        }
+                        bolean = (document.getElementById('check-scheduler').checked);
+                        console.log(bolean);
+                        if (!bolean) {
+                            clearInterval(start)
+                        }
+                    }, intervalo)
+
+                }
+            } catch (error) {
+                console.error('Error checking import status:', error);
+            }
+        }
+
+        intervalo = async () => {
+            setTimeout(console.log("intervalo"), 30000)
+            return
+        }
+
+        async function startImport(event) {
+            importando = true;
+            console.log("iniciou")
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            var progressElement = document.getElementById("progress");
+            var statusElement = document.getElementById("status");
+            var conectElement = document.getElementById('conect');
+            var ellipsisElement = document.getElementById("ellipsis");
+            var resultElement = document.getElementById("result");
+            var errorsElement = document.getElementById("errors");
+            var progressBar = document.querySelector(".progress-bar");
+
+            // Reset progress bar and status
+            progressElement.style.width = '0%';
+            progressElement.textContent = '0%';
+            statusElement.textContent = 'Importando...';
+            resultElement.textContent = '';
+            errorsElement.textContent = '';
+            progressBar.style.display = 'block';
+
+            var ellipsisCounter = 0;
+            var ellipsisInterval = setInterval(function () {
+                if (ellipsisElement) {
+                    ellipsisElement.textContent = '.'.repeat(ellipsisCounter % 4 + 1);
+                    ellipsisCounter++;
+                }
+            }, 500); // Change ellipsis every 500ms
+
+            var pulsateInterval = setInterval(function () {
+                if (statusElement) {
+                    statusElement.style.fontSize = '1.01em';
+                    setTimeout(function () {
+                        statusElement.style.fontSize = '1em';
+                    }, 250);
+                } // Pulsate every 250ms
+            }, 500); // Pulsate every 500ms
+
+            var formData = new FormData(document.getElementById("importForm"));
+            var request = new XMLHttpRequest();
+            request.open("POST", "/importar", true);
+            request.setRequestHeader("Accept", "text/event-stream");
+
+            request.onreadystatechange = function () {
+                if (request.readyState === 3) { // Recebendo evento SSE
+                    var lines = request.responseText.split("\n\n");
+                    lines.forEach(function (line) {
+                        if (line.startsWith("data: ")) {
+                            var data = line.replace("data: ", "").trim();
+                            if (data) {
+                                try {
+                                    var jsonData = JSON.parse(data);
+                                    if (jsonData.hasOwnProperty("progress")) {
+                                        var progressValue = jsonData.progress;
+                                        if(progressValue == -1){
+                                            window.location.href = "/erro"
+                                        }
+                                        progressElement.style.width = progressValue + '%';
+                                        progressElement.textContent = progressValue + '%';
+                                    }
+                                    if (jsonData.hasOwnProperty("status")) {
+                                        statusElement.textContent = jsonData.status;
+                                    }
+
+                                    if (jsonData.hasOwnProperty("conect") && !conectElement.dataset.barrasCriadas) {
+                                        var conectValue = jsonData.conect;
+                                        let conect = '';
+                                        conectValue.forEach(function (balanca, index) {
+                                            var progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.style.width = '0%';
+                                                progressBar.textContent = '0%';
+                                            }
+                                        });
+                                        statusElement.textContent = 'Enviando dados Extras';
+
+                                        conectElement.style.display = 'block';
+
+                                        conectValue.forEach(function (balanca, index) {
+                                            conect += `
+                                    <h4 style="color: white">${balanca.Ip} ${balanca.Nome}</h4>
+                                    <div class="progress-bar mt-3"
+                                        style="display: block; width: 100%; background-color: #f3f3f3; border-radius: 4px;">
+                                        <div name="teste" class="progress bg-primary" id="progress-${balanca.Ip}"
+                                            style="width: 0%; height: 24px; text-align: center; line-height: 24px; color: white;">
+                                            0%
+                                        </div>
+                                    </div>`;
+                                        });
+                                        conectElement.innerHTML += conect;
+                                        conectElement.dataset.barrasCriadas = true; // Indica que as barras já foram criadas
+                                    }
+
+                                    if (jsonData.hasOwnProperty("step2")) {
+                                        var balancas = jsonData.step2;
+
+                                        balancas.forEach(function (balanca) {
+                                            var progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.style.width = '50%';
+                                                progressBar.textContent = '50%';
+                                            }
+                                        });
+                                        statusElement.textContent = 'Enviando dados Extras';
+                                    }
+                                    if (jsonData.hasOwnProperty("step3")) {
+                                        var balancas = jsonData.step2;
+
+                                        balancas.forEach(function (balanca) {
+                                            var progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.style.width = '100%';
+                                                progressBar.textContent = '100%';
+                                            }
+                                        });
+                                        statusElement.textContent = 'Finalizado';
+                                    }
+
+
+                                    if (jsonData.hasOwnProperty("complete")) {
+                                        importando = false;
+                                        console.log("terminou")
+                                        let balancas = jsonData.complete;
+                                        if (ellipsisElement && statusElement) {
+                                            clearInterval(ellipsisInterval); // Stop ellipsis animation
+                                            clearInterval(pulsateInterval);
+                                            // Stop pulsate animation
+                                            // Clear ellipsis
+                                            statusElement.textContent = 'Finalizado';
+                                        }
+                                        statusElement.textContent = 'Finalizado';
+                                        let resultHtml = '<h2>Balanças Importadas:</h2>';
+                                        balancas.forEach(function (balanca) {
+                                            resultHtml += '<p>' + balanca.Nome + ' - ' + balanca.Ip + '</p>';
+                                            // Atualizar a barra de progresso para 100% se a balança estiver completa
+                                            let progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.style.width = '100%';
+                                                progressBar.textContent = '100%';
+                                            }
+                                        });
+                                        balancas.forEach(function (balanca) {
+                                            var progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.style.width = '100%';
+                                                progressBar.textContent = '100%';
+                                            }
+                                        });
+
+                                        resultElement.innerHTML = resultHtml;
+                                        conectElement.dataset.barrasCriadas = false; // Permitir a criação de novas barras em futuras execuções
+
+                                    }
+
+                                    if (jsonData.hasOwnProperty("incomplete")) {
+                                        var errors = jsonData.incomplete;
+                                        var errorsHtml = '<h2>Balanças Não Importadas:</h2>';
+                                        errors.forEach(function (balanca) {
+                                            errorsHtml += '<p>' + balanca.Nome + ' - ' + balanca.Ip + '</p>';
+                                            var progressBar = document.getElementById('progress-' + balanca.Ip);
+                                            if (progressBar) {
+                                                progressBar.classList.remove("bg-primary");
+                                                progressBar.classList.add("bg-danger");
+                                                progressBar.style.width = '100%';
+                                                progressBar.textContent = '100%';
+                                            }
+                                        });
+
+                                        errorsElement.innerHTML = errorsHtml;
+                                        clearInterval(ellipsisInterval); // Stop ellipsis animation
+                                        clearInterval(pulsateInterval); // Stop pulsate animation
+                                        ellipsisElement.textContent = ''; // Clear ellipsis
+                                    }
+                                } catch (e) {
+                                    // Handle non-JSON data
+                                }
+                            }
+                        }
+                    });
+                } else if (request.readyState === 4 && request.status !== 200) {
+                    statusElement.textContent = 'Erro ao completar a tarefa.';
+                    clearInterval(ellipsisInterval); // Stop ellipsis animation
+                    clearInterval(pulsateInterval); // Stop pulsate animation
+                    ellipsisElement.textContent = ''; // Clear ellipsis
+                }
+            };
+            request.send(formData);
+        }
+    </script>
+</body>
+
+</html>
+{{end}}

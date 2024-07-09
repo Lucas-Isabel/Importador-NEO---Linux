@@ -1,0 +1,87 @@
+package file
+
+import (
+	"bufio"
+	"database/sql"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func infoSystelWriter(arq string, d_info, d_forn, d_aler, d_fra, d_con map[string]string, ip string) error {
+	item, err := os.Open(arq)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	defer item.Close()
+
+	passw, user := "1234", "user"
+	if ip == "localhost" {
+		passw, user = "Systel#4316", "systel"
+	}
+
+	db_acess := fmt.Sprintf("user=%s password=%s host=%s dbname=cuora sslmode=disable", user, passw, ip)
+	db, err := sql.Open("postgres", db_acess)
+	if err != nil {
+		fmt.Println("ERRO: ", err)
+		return err
+	}
+	defer db.Close()
+
+	scanner := bufio.NewScanner(item)
+	for scanner.Scan() {
+		line := scanner.Text()
+		lote := line[90:102]
+		codPlu := line[3:9]
+		codInfo := line[68:74]
+		codAler := line[126:130]
+		codForn := line[86:90]
+		codFrac := line[122:126]
+		codCons := line[134:138]
+
+		info := d_info[codInfo]
+		aler := d_aler[codAler]
+		forn := d_forn[codForn]
+		cons := d_con[codCons]
+		frac := d_fra[codFrac]
+
+		if len(forn) < 158 && forn != "" {
+			forn += strings.Repeat(" ", 158-len(forn))
+		}
+
+		fornFrac := forn + " " + frac
+
+		loteInt, _ := strconv.Atoi(lote)
+		var err_envio_info error
+		var erro_str string
+		if loteInt > 0 {
+			err_envio_info = enviarInf(strconv.Itoa(loteInt), codPlu, db, "lot")
+			erro_str = fmt.Sprint(err_envio_info)
+		}
+		if info != "" {
+			err_envio_info = enviarInf(info, codPlu, db, "extra_field1")
+			erro_str = fmt.Sprint(err_envio_info)
+		}
+		if aler != "" {
+			err_envio_info = enviarInf(aler, codPlu, db, "extra_field2")
+			erro_str = fmt.Sprint(err_envio_info)
+		}
+		if cons != "" {
+			err_envio_info = enviarInf(cons, codPlu, db, "preservation_info")
+			erro_str = fmt.Sprint(err_envio_info)
+		}
+		if forn != "" && frac != "" {
+			err_envio_info = enviarInf(fornFrac, codPlu, db, "ingredients")
+			erro_str = fmt.Sprint(err_envio_info)
+		}
+		if strings.Contains(erro_str, "pq: password authentication failed for user") || strings.Contains(erro_str, "No connection could be made because the target machine actively refused it.") {
+			fmt.Println("Chegou aqui: ", err_envio_info)
+			return err_envio_info
+		}
+	}
+
+	fmt.Println(EncodeToUTF8(ip))
+	return nil
+}

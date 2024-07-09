@@ -1,0 +1,52 @@
+{{define "Log"}}
+{{template "_head"}}
+{{template "_nav"}}
+
+<body class="bg-dark">
+    <div class="container content">
+        <div class="card-footer bg-dark">
+            <a href="/balancas" class="btn btn-primary mb-2">Editar Balanças</a>
+            <a href="/add-balanca" class="btn btn-primary mb-2">Adicionar Balanças</a>
+            <a href="/file" class="btn btn-primary mb-2">Arquivo de importação</a>
+            <a href="/" class="btn btn-primary mb-2">Pagina inicial</a>
+        </div>
+            <section class="card">
+                <div>
+                    <table class="table table-striped table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Nome</th>
+                                <th>Setores</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .}}
+                            <tr>
+                                <!-- <td>
+                                    <div class="btn-group" data-bs-toggle="buttons">
+                                        <label class="btn btn-primary active">
+                                            <input type="checkbox" class="me-2" name="{{.Ip}}" id="{{.Ip}}" value="on" checked />
+                                            Importar
+                                        </label>
+                                    </div>
+                                </td> -->
+                                <td>{{.Ip}}</td>
+                                <td>{{.Nome}}</td>
+                                <td>{{.Lista_Setores}}</td>
+                                <td>Enviado com sucesso</td>
+                                {{end}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer bg-dark">
+                    <a href="/" class="btn btn-primary mb-2">Pagina Inicial</a>
+            </section>
+    </div>
+    {{template "_footer"}}
+</body>
+
+</html>
+{{end}}

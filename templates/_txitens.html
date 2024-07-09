@@ -1,0 +1,26 @@
+{{define "_txitens"}}
+<form id="txitens-form" method="POST" action="txitens">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Itens:</label><br>
+                <div class="input-group">
+                    <input type="text" id="txitens-itens" name="txitens_itens" class="form-control"
+                        value="{{.Txitens.Caminhos.Itens}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" onclick="buscaArquivo('txitens_itens')">Buscar
+                            arquivo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <button type="submit" value="txitens" class="btn btn-primary">Puxar dados</button>
+    <a class="btn btn-warning" href="/">Voltar</a>
+
+</form>
+{{end}}

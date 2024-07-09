@@ -1,0 +1,23 @@
+{{define "_Cad"}}
+<form id="Cad-form" method="POST" action="push-Cad">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Itens:</label><br>
+                <div class="input-group">
+                    <input type="text" id="Cad-itens" name="Cad-itens" class="form-control"
+                        value="{{.Cad.Caminhos_Cad.Itens_Cad}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" onclick="buscaArquivo('Cad-itens')">Buscar
+                            arquivo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" value="salvar" class="btn btn-primary">Puxar dados</button>
+    <a class="btn btn-warning" href="/">Voltar</a>
+</form>
+{{end}}

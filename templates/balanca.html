@@ -1,0 +1,70 @@
+{{define "Balanca"}}
+
+{{template "_head"}}
+{{template "_nav"}}
+
+
+<body class="bg-dark">
+    <div class="container">
+        <div class="card-footer bg-dark">
+            <a href="/add-balanca" class="btn btn-primary mb-2">Adicionar Balanças</a>
+            <a href="/" class="btn btn-primary mb-2">Pagina inicial</a>
+        </div>
+        <section class="card">
+            <div>
+                <table class="table table-striped table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Nome</th>
+                            <th>Setores</th>
+                            <th rowspan="2">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .}}
+                        <tr>
+                            <td>{{.Ip}}</td>
+                            <td>{{.Nome}}</td>
+                            <td>{{.Lista_Setores}}</td>
+                            <td><button onclick="onEdit(['{{.Id}}' ,'{{.Ip}}'])"
+                                    class="btn btn-warning mb-2">Editar</button></td>
+                            <td><button onclick="onDelete(['{{.Id}}' ,'{{.Ip}}'])"
+                                    class="btn btn-danger mb-2">deletar</button></td>
+
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    {{template "_footer"}}
+</body>
+
+<script>
+    function onEdit(idEip) {
+        let id = idEip[0];
+        let ip = idEip[1];
+        let mensagem = "Deseja mesmo editar balança: " + ip;
+        let confirmacao = confirm(mensagem); // Armazena o resultado do confirm
+
+        if (confirmacao) { // Verifica o resultado do confirm
+            window.location = "/edit-balanca?identifiCador=" + ip;
+        }
+    }
+    
+    function onDelete(idEip) {
+        let id = idEip[0];
+        let ip = idEip[1];
+        let mensagem = "Deseja mesmo deletar balança: " + ip;
+        let confirmacao = confirm(mensagem); // Armazena o resultado do confirm
+
+        if (confirmacao) { // Verifica o resultado do confirm
+            window.location = "/delete?identifiCador=" + ip;
+        }
+    }
+</script>
+
+</html>
+{{end}}

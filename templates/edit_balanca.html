@@ -1,0 +1,52 @@
+{{define "EditBalanca"}}
+{{template "_head"}}
+{{template "_nav"}}
+
+<body class="bg-dark font-weight-light text-white">
+
+    <div class="container card bg-dark">
+        <br>
+        <div class="jumbotron jumbotron-fluid bg-primary">
+            <div class="container">
+                <h1 class="display-5">Editar Balança {{.Balanca.Ip}}</h1>
+                <p class="lead">Insira os detalhes</p>
+            </div>
+        </div>
+        <form method="POST" action="edit-balanca">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="codigo">Ip:</label>
+                        <input type="text" name="codigo" class="form-control" value="{{.Balanca.Ip}}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="descricao">Nome:</label>
+                        <input type="text" name="descricao" class="form-control" value="{{.Balanca.Nome}}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="descricao">Setores:</label>
+                        <select name="setores" id="venda-select" multiple required>
+                            {{range .Setores}}
+                                <option value="{{.Codigo}};{{.Nome}}">Setor {{.Nome}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" value="salvar" class="btn btn-primary">Salvar</button>
+            <a class="btn btn-warning" href="/">Voltar</a>
+        </form>
+    </div>
+    {{template "_footer"}}
+</body>
+
+</html>
+{{end}}

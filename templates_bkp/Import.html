@@ -1,0 +1,90 @@
+{{define "Import"}}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <title>CLIPSE + PC</title>
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white font-weight-bold" href="/">CLIPSE + PC</a>
+</nav>
+
+<body class="bg-dark font-weight-light text-white">
+
+    <div class="container card bg-dark">
+        <br>
+
+        <div class="jumbotron jumbotron-fluid bg-primary">
+            <div class="container">
+                <h1 class="display-5">Importação dos dados</h1>
+                <p class="lead">Ajuste a configuração e faça o envio dos dados</p>
+            </div>
+        </div>
+        <form method="POST" action="send">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="porta">Porta:</label>
+                        <input type="number" name="porta" class="form-control" max="99">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="velocidade">Velocidade:</label>
+                        <select class="form-control" name="velocidade-select" id="venda-select">
+                            <option value="9600" selected>9600</option>
+                            <option value="115200">115200</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group" data-bs-toggle="buttons">
+                <label
+                    class="btn btn-warning"
+                >
+                    <input
+                        type="radio"
+                        class="me-2"
+                        name="tipo"
+                        id=""
+                        autocomplete="off"
+                        value="1"
+                        
+                    />
+                    Apagar produtos que não estão no programa
+                </label>
+                <label
+                    class="btn btn-info"
+                >
+                    <input type="radio" name="tipo" id="" autocomplete="on" value="2"  checked/> 
+                    Apenas enviar os produtos
+                </label>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <button type="submit" value="salvar" class="btn btn-success">Salvar</button>
+                        <a class="btn btn-info" href="/">Voltar</a>
+                    </div>
+                </div>
+            </div>
+
+            
+
+        </form>
+        <br>
+    </div>
+</body>
+
+</html>
+{{end}}

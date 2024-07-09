@@ -1,0 +1,33 @@
+{{define "_txitens"}}
+<form id="txitens-form" method="POST" action="txitens">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Itens:</label><br>
+                <input type="text" id="txitens-itens" name="txitens_itens" class="form-control" value="{{.Txitens.Caminhos.Itens}}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Receita:</label><br>
+                <input type="text" name="txitens-form" class="form-control" value="{{.Txitens.Caminhos.Receita}}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="tipo">Nutricional:</label><br>
+                <input type="text" name="txitens-form" class="form-control" value="{{.Txitens.Caminhos.Nutricional}}">
+            </div>
+        </div>
+    </div>
+
+
+    <button type="submit" value="txitens" class="btn btn-primary">Puxar dados</button>
+    <a class="btn btn-warning" href="/">Voltar</a>
+
+</form>
+{{end}}
